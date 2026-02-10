@@ -2,6 +2,7 @@ import { StatusBar} from "react-native";
 import { ThemeProvider } from 'styled-components/native';
 import { theme } from "./theme";
 import Navigation from "./navigations";
+import { images } from "./utils/images"
 
 const App = () => {
     return (

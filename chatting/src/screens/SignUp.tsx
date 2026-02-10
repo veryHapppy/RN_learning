@@ -6,7 +6,7 @@ type props = StackScreenProps<AuthStackParamList, 'SignUp'>;
 
 const Container = styled.View`
     flex: 1;
-    justify-content: conter;
+    justify-content: center;
     align-items: center;
     background-color: ${({ theme }) => theme.background};
 `;

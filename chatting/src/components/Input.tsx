@@ -76,6 +76,7 @@ const Input = forwardRef<TextInput, InputProps>(
                 autoCorrect={false}
                 textContentType="none"
                 underlineColorAndroid="transparent"
+                submitBehavior="submit"
             />
         </Container>
     );

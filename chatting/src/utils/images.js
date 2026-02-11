@@ -2,4 +2,5 @@ const prefix = 'https://firebasestorage.googleapis.com/v0/b/chatting-app-7de45.f
 
 export const images = {
     logo: `${prefix}/logo.png?alt=media`,
+    photo: `${prefix}/logo.png?alt=media`,
 };

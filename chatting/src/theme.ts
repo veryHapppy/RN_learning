@@ -14,4 +14,12 @@ export const theme = {
     label: colors.gray_1,
     inputPlaceholder: colors.gray_1,
     inputBorder: colors.gray_1,
+    errorText: colors.red,
+    buttonBackground: colors.blue,
+    buttonTitle: colors.white,
+    buttonUndefilledTitle: colors.blue,
+    headerTintColor: colors.black,
+    imageButtonBackground: colors.gray_1,
+    imageButtonIcon: colors.white,
+    
 };

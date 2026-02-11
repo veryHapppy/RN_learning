@@ -1,6 +1,9 @@
 import styled from 'styled-components/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { IconProps } from 'react-native-vector-icons/Icon';
+import { useEffect } from 'react';
+import { Platform, Alert } from 'react-native';
+import { launchImageLibrary, ImagePickerResponse } from 'react-native-image-picker';
 
 const Container = styled.View`
     align-self: center;
@@ -34,7 +37,7 @@ const ButtonIcon = styled(MaterialIcons).attrs<Partial<IconProps>>(({ theme }) =
     color: ${({ theme }) => theme.imageButtonIcon};
 `;
 interface PhotoButtonProps {
-    onPress: () => void,
+    onPress?: () => void,
 }
 const PhotoButton = ( {onPress} : PhotoButtonProps) => {
     return (
@@ -48,12 +51,33 @@ interface ImageProps {
     uri?: string,
     imageStyle?: object,
     rounded?: boolean,
+    showButton?: boolean,
+    onChangeImage?: (uri:string) => void,
 };
 
-const Image = ({ uri, imageStyle, rounded=false}: ImageProps) => {
+const Image = ({ uri, imageStyle, rounded=false, showButton=false, onChangeImage=(uri:string)=>{}}: ImageProps) => {
+    const _handleEditButton = async () => {
+        try {
+            const result = await launchImageLibrary({
+                mediaType: 'photo',
+                selectionLimit: 1,
+                quality: 1,
+            })
+
+            if (!result.didCancel) {
+                onChangeImage(result.assets?.[0]?.uri || '');
+            }
+        } catch (e) {
+            if (e instanceof Error) {
+                Alert.alert('Photo Error', e.message)
+            }
+        }
+    };
+
     return (
         <Container>
             <StyledImage source={{uri}} style={imageStyle} rounded={rounded}/>
+            {showButton && <PhotoButton onPress={_handleEditButton  }/>}
         </Container>
     );
 };

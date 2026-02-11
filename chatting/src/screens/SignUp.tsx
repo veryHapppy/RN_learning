@@ -7,6 +7,8 @@ import { AuthStackParamList } from "../navigations/type";
 import { StackScreenProps } from '@react-navigation/stack';
 import { TextInput } from 'react-native';
 import { images } from '../utils/images';
+import { Alert } from 'react-native';
+import { signup } from '../utils/firebase';
 
 type props = StackScreenProps<AuthStackParamList, 'SignUp'>;
 
@@ -65,17 +67,29 @@ const SignUp = () => {
         setDisabled(!(name && email && password && passwordConfirm && !errorMessage));
     }, [name, email, password, passwordConfirm, errorMessage]);
 
-    const _handleSignupButtonPress = () => {};
+    const _handleSignupButtonPress = async () => {
+        try {
+            const user = await signup({ email, password });
+            console.log(user);
+            Alert.alert('Signup Success', user.email || "")
+        } catch (e) {
+            if (e instanceof Error) {
+                Alert.alert("Signup Error", e.message)
+            }
+        }
+    };
 
 
 
 
     return (
         <KeyboardAwareScrollView
-            extraScrollHeight={20}
+            contentContainerStyle={{ flexGrow: 1}}
+            extraScrollHeight={30}
+            enableOnAndroid={true}
         >
             <Container>
-                <Image rounded uri={photoUrl} />
+                <Image rounded uri={photoUrl} showButton onChangeImage={url => setPhotoUrl(url)}/>
                 <Input
                     label="Name"
                     value={name}

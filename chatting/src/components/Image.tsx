@@ -58,11 +58,13 @@ interface ImageProps {
 const Image = ({ uri, imageStyle, rounded=false, showButton=false, onChangeImage=(uri:string)=>{}}: ImageProps) => {
     const _handleEditButton = async () => {
         try {
-            const result = await launchImageLibrary({
+            const options: any = {
                 mediaType: 'photo',
                 selectionLimit: 1,
                 quality: 1,
-            })
+                includeBase64: Platform.OS === 'android',
+            }
+            const result = await launchImageLibrary(options);
 
             if (!result.didCancel) {
                 onChangeImage(result.assets?.[0]?.uri || '');
@@ -77,7 +79,7 @@ const Image = ({ uri, imageStyle, rounded=false, showButton=false, onChangeImage
     return (
         <Container>
             <StyledImage source={{uri}} style={imageStyle} rounded={rounded}/>
-            {showButton && <PhotoButton onPress={_handleEditButton  }/>}
+            {showButton && <PhotoButton onPress={ _handleEditButton }/>}
         </Container>
     );
 };

@@ -21,5 +21,7 @@ export const theme = {
     headerTintColor: colors.black,
     imageButtonBackground: colors.gray_1,
     imageButtonIcon: colors.white,
+    spinnerBackground: colors.black,
+    spinnerIndicator: colors.white,
     
 };

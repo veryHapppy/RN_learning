@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import styled from "styled-components/native";
 import { AuthStackParamList } from "../navigations/type";
 import { StackScreenProps } from '@react-navigation/stack';
@@ -8,7 +8,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { validateEmail, removeWhitespace } from "../utils/common"
 import { Alert } from "react-native";
 import { login } from "../utils/firebase"
-
+import { ProgressContext } from "../contexts";
 
 const Container = styled.View`
     flex: 1;
@@ -34,6 +34,7 @@ const Login = ({ navigation }: props) => {
     const passwordRef = useRef<any>(null);
     const [errorMessage, setErrorMessage] = useState('');
     const [disabled, setDisabled] = useState(true);
+    const { spinner } = useContext(ProgressContext);
 
     useEffect(() => {
         setDisabled(!(email && password && !errorMessage));
@@ -51,12 +52,15 @@ const Login = ({ navigation }: props) => {
     };
     const _handleLoginButtonPress = async () => {
         try {
+            spinner.start();
             const user = await login({ email, password });
             Alert.alert('Login Success', user.email || "");
         } catch (e) {
             if (e instanceof Error) {
                 Alert.alert("Login Error", e.message)
             }
+        } finally {
+            spinner.stop();
         }
     };
 

@@ -3,3 +3,12 @@ export type AuthStackParamList = {
   SignUp: undefined;
   //Chat: { roomID: string }; 
 };
+
+export type MainStackParamList = {
+  Channel: undefined;
+  "Channel Creation": undefined;
+  "ChannelList": undefined;
+  "Profile": undefined;
+  "Main": undefined;
+  //Chat: { roomID: string }; 
+};

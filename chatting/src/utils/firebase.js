@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile} from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut} from 'firebase/auth';
 import config from '../../firebase.json'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
@@ -47,5 +47,8 @@ export const signup = async ({ email, password, name, photoUrl }) => {
     });
     
     return user;
-}
+};
 
+export const logout = async () => {
+    return await signOut(auth);
+};

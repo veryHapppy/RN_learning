@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import styled from 'styled-components/native';
 import { Image, Input, Button } from '../components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -9,6 +9,7 @@ import { TextInput } from 'react-native';
 import { images } from '../utils/images';
 import { Alert } from 'react-native';
 import { signup } from '../utils/firebase';
+import { ProgressContext, UserContext } from '../contexts';
 
 type props = StackScreenProps<AuthStackParamList, 'SignUp'>;
 
@@ -43,6 +44,9 @@ const SignUp = () => {
     const passwordConfirmRef = useRef<TextInput>(null);
     const didMountRef = useRef<boolean>(false);
 
+    const { spinner } = useContext(ProgressContext);
+    const { dispatch } = useContext(UserContext);
+
     useEffect(() => {
         if (didMountRef.current) {
             let _errorMessage = '';
@@ -69,13 +73,17 @@ const SignUp = () => {
 
     const _handleSignupButtonPress = async () => {
         try {
+            spinner.start();
             const user = await signup({ email, password, name, photoUrl });
             console.log(user);
             Alert.alert('Signup Success', user.email || "")
+            dispatch(user);
         } catch (e) {
             if (e instanceof Error) {
                 Alert.alert("Signup Error", e.message)
             }
+        } finally {
+            spinner.stop();
         }
     };
 

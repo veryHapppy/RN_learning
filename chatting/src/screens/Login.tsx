@@ -8,7 +8,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { validateEmail, removeWhitespace } from "../utils/common"
 import { Alert } from "react-native";
 import { login } from "../utils/firebase"
-import { ProgressContext } from "../contexts";
+import { ProgressContext, UserContext} from "../contexts";
 
 const Container = styled.View`
     flex: 1;
@@ -35,6 +35,7 @@ const Login = ({ navigation }: props) => {
     const [errorMessage, setErrorMessage] = useState('');
     const [disabled, setDisabled] = useState(true);
     const { spinner } = useContext(ProgressContext);
+    const { dispatch } = useContext(UserContext);
 
     useEffect(() => {
         setDisabled(!(email && password && !errorMessage));
@@ -55,6 +56,7 @@ const Login = ({ navigation }: props) => {
             spinner.start();
             const user = await login({ email, password });
             Alert.alert('Login Success', user.email || "");
+            dispatch(user);
         } catch (e) {
             if (e instanceof Error) {
                 Alert.alert("Login Error", e.message)

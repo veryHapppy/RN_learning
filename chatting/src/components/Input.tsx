@@ -20,7 +20,7 @@ const Label = styled.Text<LabelProps>`
 const StyledTextInput = styled.TextInput.attrs(({ theme }) => ({
     placeholderTextColor: theme.inputPlaceholder,
 }))<LabelProps>`
-    background-color: ${({ theme }) => theme.background};
+    background-color: ${({ theme, editable }) => editable ? theme.background : theme.inputDisabledBackground};
     color: ${({ theme }) => theme.text};
     padding: 20px 10px;
     font-size: 16px;
@@ -32,13 +32,14 @@ const StyledTextInput = styled.TextInput.attrs(({ theme }) => ({
 interface InputProps {
   label: string;
   value: string;
-  onChangeText: (text: string) => void;
+  onChangeText?: (text: string) => void;
   onSubmitEditing?: () => void; // 선택적 속성으로 처리 (Optional)
   onBlur?: () => void;           // 선택적 속성으로 처리
   placeholder?: string;
   isPassword?: boolean;
   returnKeyType?: 'done' | 'next';
   maxLength?: number;
+  disabled?: boolean;
 }
 const Input = forwardRef<TextInput, InputProps>(
     ({
@@ -51,6 +52,7 @@ const Input = forwardRef<TextInput, InputProps>(
     isPassword,
     returnKeyType,
     maxLength,
+    disabled,
 }, ref) => {
     const [isFocused, setIsFocused] = useState(false);
 
@@ -77,6 +79,7 @@ const Input = forwardRef<TextInput, InputProps>(
                 textContentType="none"
                 underlineColorAndroid="transparent"
                 submitBehavior="submit"
+                editable={!disabled}
             />
         </Container>
     );

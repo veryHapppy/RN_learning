@@ -8,7 +8,7 @@ const Container = styled.View`
     background-color: ${({ theme }) => theme.background}
 `;
 
-type props = StackScreenProps<MainStackParamList, "ChannelList">;
+type props = StackScreenProps<MainStackParamList, "Channels">;
 const ChannelList = ({ navigation }: props) => {
     return (
         <Container>

@@ -5,7 +5,7 @@ export type AuthStackParamList = {
 };
 
 export type MainStackParamList = {
-  Channel: undefined;
+  Channel: {id:string, title:string};
   "Channel Creation": undefined;
   "Channels": undefined;
   "Profile": undefined;

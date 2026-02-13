@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut} from 'firebase/auth';
 import config from '../../firebase.json'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
 
 const app = initializeApp(config);
 
@@ -64,3 +65,18 @@ export const updateUserPhoto = async photoUrl => {
     await user.updateProfile({ photoURL: storageUrl });
     return { name: user.displayName, email: user.email, photoUrl: user.photoURL};
 };
+
+export const DB = getFirestore(app);
+
+export const createChannel = async ({title, description}) => {
+    const newChannelRef = doc(collection(DB, "Channels"));
+    const id = newChannelRef.id;
+    const newChannel = {
+        id,
+        title,
+        description,
+        createAt: Date.now(),
+    };
+    await setDoc(newChannelRef, newChannel);
+    return id;
+}

@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut} from 'firebase/auth';
 import config from '../../firebase.json'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
+import { getFirestore, collection, doc, setDoc, addDoc } from 'firebase/firestore';
 
 const app = initializeApp(config);
 
@@ -75,8 +75,17 @@ export const createChannel = async ({title, description}) => {
         id,
         title,
         description,
-        createAt: Date.now(),
+        createdAt: Date.now(),
     };
     await setDoc(newChannelRef, newChannel);
     return id;
-}
+};
+
+export const createMessage = async ({channelId, message}) => {
+    const newMessageRef = collection(DB, "Channels", channelId, "messages");
+    return await addDoc(newMessageRef, {
+        text: message.text,
+        createdAt: Date.now(),
+        user: message.user,
+    });
+};

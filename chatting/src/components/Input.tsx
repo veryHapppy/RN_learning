@@ -30,7 +30,7 @@ const StyledTextInput = styled.TextInput.attrs(({ theme }) => ({
     border-radius: 4px;
 `;
 interface InputProps {
-  label: string;
+  label?: string;
   value: string;
   onChangeText?: (text: string) => void;
   onSubmitEditing?: () => void; // 선택적 속성으로 처리 (Optional)

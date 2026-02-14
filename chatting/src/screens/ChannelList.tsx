@@ -1,9 +1,12 @@
-import { useContext } from "react";
+import { useContext, memo, useState, useEffect } from "react";
 import styled, { ThemeContext} from "styled-components/native";
 import { FlatList } from "react-native";
 import { MainStackParamList } from "../navigations/type";
 import { StackScreenProps } from '@react-navigation/stack';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { DB } from '../utils/firebase'
+import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
+import moment from "moment";
 
 const Container = styled.View`
     flex: 1;
@@ -36,15 +39,13 @@ const ItemTime = styled.Text`
 interface Channelitem {
     id:string, title:string, description:string, createdAt:number
 };
-const channels: Channelitem[] = [];
-for (let idx=0;idx<1000;idx++) {
-    channels.push({
-        id: idx.toString(),
-        title: `title ${idx}`,
-        description: `description ${idx}`,
-        createdAt: idx,
-    });
-}
+
+const getDateOrTime = (ts:number) => {
+    const now = moment().startOf("day");
+    const target = moment(ts).startOf("day");
+    return moment(ts).format(now.diff(target, 'days') > 0 ? 'MM/DD' : 'HH:mm')
+};
+
 interface OnPressProps {
     id:string, 
     title:string,
@@ -53,7 +54,7 @@ interface ItemProps {
     item: {id:string, title:string, description:string, createdAt:number},
     onPress: ({id, title} :OnPressProps) => void,
 };
-const Item = ({item:{ id, title, description, createdAt }, onPress}: ItemProps) => {
+const Item = memo(({item:{ id, title, description, createdAt }, onPress}: ItemProps) => {
     const theme = useContext(ThemeContext);
     console.log(`Item: ${id}`);
     
@@ -63,7 +64,7 @@ const Item = ({item:{ id, title, description, createdAt }, onPress}: ItemProps) 
                 <ItemTitle>{title}</ItemTitle>
                 <ItemDescription>{description}</ItemDescription>
             </ItemTextContainer>
-            <ItemTime>{createdAt}</ItemTime>
+            <ItemTime>{getDateOrTime(createdAt)}</ItemTime>
             <MaterialCommunityIcons
                 name="chevron-right"
                 size={24}
@@ -71,10 +72,30 @@ const Item = ({item:{ id, title, description, createdAt }, onPress}: ItemProps) 
             />
         </ItemContainer>
     );
-};
+});
 
 type props = StackScreenProps<MainStackParamList, "Channels">;
 const ChannelList = ({ navigation }: props) => {
+    const [channels, setChannels] = useState<Channelitem[]>([])
+
+    useEffect(() => {
+        const q = query(
+            collection(DB, "Channels"),
+            orderBy("createdAt", "desc")
+        );
+
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const list: Channelitem[] = [];
+            snapshot.forEach((doc) => {
+                list.push(doc.data() as Channelitem);
+            });
+            setChannels(list);
+        })
+        
+        return () => unsubscribe();
+    }, []);
+
+
     const _handleItemPress = (params:OnPressProps)  => {
         navigation.navigate("Channel", params);
     };
@@ -82,7 +103,7 @@ const ChannelList = ({ navigation }: props) => {
     return (
         <Container>
             <FlatList
-                keyExtractor={item => item['id'].toString()}
+                keyExtractor={item => item['id']}
                 data={channels}
                 renderItem={({ item }) => (
                     <Item item={item} onPress={_handleItemPress} />
